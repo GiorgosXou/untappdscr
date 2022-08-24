@@ -3,7 +3,7 @@
 <img src="imgs/img1.png">
 </p>
 
-# Untappdscr V.1.0.0
+# Untappdscr V.1.0.0 🍻
 Is an [Untappd](https://untappd.com) scrapper made primarly for the public in collaboration with a private brewery company.
 
 
