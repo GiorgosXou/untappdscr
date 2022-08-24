@@ -212,7 +212,7 @@ def main(): # TODO: TOO MANY REQUESTS AT THE SAME TIME (RECOMENDATION: USE DELAY
     print_top_rated_beers    ('BT4', 'Greece')
     print_top_rated_breweries('E4' , 'Greece',            color='#2F75B5');  
     print_top_rated_breweries('N4' , 'Greece', 'micro_brewery', '#2F75B5'); 
-    print_top_rated_breweries('W4'                                      );  # get_picker says to untappd scrapper to parse the brewery-picker too
+    print_top_rated_breweries('W4'                                       );   
     wb.app.screen_updating = True
 
 if __name__ == "__main__":
