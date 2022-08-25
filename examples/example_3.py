@@ -1,5 +1,6 @@
 # xlwings
 
+import sys
 import time
 import random 
 import string
@@ -203,17 +204,17 @@ def print_top_rated_breweries(at, country='', type='', color='#217346', get_pick
         sheet.range(i, coln + 7).font.color = date_color
     
 
-def main(): # TODO: TOO MANY REQUESTS AT THE SAME TIME (RECOMENDATION: USE DELAYS BETWEEN THEM)
+def main(request): # TODO: TOO MANY REQUESTS AT THE SAME TIME (RECOMENDATION: USE DELAYS BETWEEN THEM)
     wb.app.screen_updating = False
-    print_breweries          ('A4','AF4') 
-    print_beers              ('B4','AU4')
-    print_venues             ('C4','CE4')
-    print_top_rated_beers    ('BI4')
-    print_top_rated_beers    ('BT4', 'Greece')
-    print_top_rated_breweries('E4' , 'Greece',            color='#2F75B5');  
-    print_top_rated_breweries('N4' , 'Greece', 'micro_brewery', '#2F75B5'); 
-    print_top_rated_breweries('W4'                                       );   
+    if   request == 1: print_breweries          ('A4','AF4') 
+    elif request == 2: print_beers              ('B4','AU4')
+    elif request == 3: print_venues             ('C4','CE4')
+    elif request == 4: print_top_rated_beers    ('BI4')
+    elif request == 5: print_top_rated_beers    ('BT4', 'Greece')
+    elif request == 6: print_top_rated_breweries('E4' , 'Greece',            color='#2F75B5');  
+    elif request == 7: print_top_rated_breweries('N4' , 'Greece', 'micro_brewery', '#2F75B5'); 
+    else             : print_top_rated_breweries('W4'                                       );   
     wb.app.screen_updating = True
 
 if __name__ == "__main__":
-    main() # distinctypy has a rng seed don't forget  https://distinctipy.readthedocs.io/en/latest/api.html?highlight=seed#distinctipy.distinctipy.get_colors
+    main(int(sys.argv[1])) # distinctypy has a rng seed don't forget  https://distinctipy.readthedocs.io/en/latest/api.html?highlight=seed#distinctipy.distinctipy.get_colors
