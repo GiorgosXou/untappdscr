@@ -16,6 +16,7 @@ wb              = xw.Book        ('untappd.xlsx')
 sheet           = wb.sheets      ['Sheet1']
 color_gradient1 = list(Color("red"   ).range_to(Color("green" ), 50 ))
 color_gradient2 = list(Color("yellow").range_to(Color("maroon"), 200))
+DATE_FORMAT     = "%d/%m/%Y, %H:%M:%S"
 
 
 def num2col(num): # https://stackoverflow.com/a/23862195/11465149
@@ -79,7 +80,7 @@ def print_breweries(_from, at, color='#000000'): # repeating code but nvm for no
     #sheet.range(f'{col}{row}:{cole}{row}').insert('down', 'format_from_right_or_below')
     for i, brewery in enumerate(breweries,row):
         brewery = untappd.get_brewery(brewery)
-        date_time = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
+        date_time = datetime.now().strftime(DATE_FORMAT)
         sheet.range(f'{col}{i}:{cole}{i}').insert('down', 'format_from_right_or_below')
         sheet.range(i, coln     ).value      = brewery.details.claimed
         sheet.range(i, coln     ).font.color = '#217346' if brewery.details.claimed else '#732121'
@@ -108,7 +109,7 @@ def print_beers(_from, at): # repeating code but nvm for now
     date_color = ColorHash(datetime.now()).hex # unnecessery computation here but nvm, could had been just random or just boolean based, lol
     for i, beer in enumerate(beers, row):
         beer = untappd.get_beer(int(beer)) # int lol
-        date_time = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
+        date_time = datetime.now().strftime(DATE_FORMAT)
         sheet.range(f'{col}{i}:{cole}{i}').insert('down', 'format_from_right_or_below')
         sheet.range(i, coln     ).value      = beer.details.discontinued
         sheet.range(i, coln     ).font.color = '#217346' if beer.details.discontinued else '#732121'
@@ -136,7 +137,7 @@ def print_venues(_from, at):
     date_color = ColorHash(datetime.now()).hex # unnecessery computation here but nvm, could had been just random or just boolean based, lol
     for i, venue in enumerate(venue, row):
         venue = untappd.get_venue(int(venue)) # int lol
-        date_time = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
+        date_time = datetime.now().strftime(DATE_FORMAT)
         sheet.range(f'{col}{i}:{cole}{i}').insert('down', 'format_from_right_or_below')
         sheet.range(i, coln     ).value      = venue.is_verified
         sheet.range(i, coln     ).font.color = '#217346' if venue.is_verified else '#732121'
@@ -157,7 +158,7 @@ def print_top_rated_beers(at, country='', type='', get_picker=False): # col, row
     coln       = col2num(col)
     cole       = num2col(coln+9)
     beers      = untappd.get_top_rated_beers(country, type, get_picker).items()
-    date_time  = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
+    date_time  = datetime.now().strftime(DATE_FORMAT)
     date_color = ColorHash(date_time).hex   
     for i,(_, beer) in enumerate(beers,row):
         sheet.range(f'{col}{i}:{cole}{i}').insert('down', 'format_from_right_or_below')
@@ -184,7 +185,7 @@ def print_top_rated_breweries(at, country='', type='', color='#217346', get_pick
     coln       = col2num(col)
     cole       = num2col(coln+7)
     breweries  = untappd.get_top_rated_breweries(country, type, get_picker).items()
-    date_time  = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
+    date_time  = datetime.now().strftime(DATE_FORMAT)
     date_color = ColorHash(date_time).hex
     #sheet.range(f'{col}{row}:{cole}{row}').insert('down', 'format_from_right_or_below')
     for i,(_, brewery) in enumerate(breweries,row):
@@ -204,7 +205,7 @@ def print_top_rated_breweries(at, country='', type='', color='#217346', get_pick
         sheet.range(i, coln + 7).font.color = date_color
     
 
-def main(request): # TODO: TOO MANY REQUESTS AT THE SAME TIME (RECOMENDATION: USE DELAYS BETWEEN THEM)
+def main(request): 
     wb.app.screen_updating = False
     if   request == 1: print_breweries          ('A4','AF4') 
     elif request == 2: print_beers              ('B4','AU4')
