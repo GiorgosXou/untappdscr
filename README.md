@@ -39,6 +39,12 @@ Because [Untappd](https://untappd.com) stoped accepting new applications a long 
 </p>
 
 
-## Insipired by
-* https://github.com/WebBreacher/untappdScraper
-* https://github.com/BrandonE/untappd-scraper-web
+## Research
+* ***Things I might need:***
+* * https://github.com/borisbabic/browser_cookie3
+* ***Projects:***
+* * ***Inspired by:***
+* * * https://github.com/WebBreacher/untappdScraper
+* * * https://github.com/BrandonE/untappd-scraper-web
+* * ***Other:***
+* * * https://github.com/OrganicIrradiation/ratebeer
