@@ -14,7 +14,7 @@ from   untappdscr      import UntappdScrapper
 
 
 
-filename        = __file__.rsplit(sep, 1)[0] + sep + 'untappd222.xlsx' 
+filename        = __file__.rsplit(sep, 1)[0] + sep + 'untappd.xlsx' 
 untappd         = UntappdScrapper((1,2),True)
 wb              = load_workbook(filename)
 sheet           = wb.active 
