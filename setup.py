@@ -13,8 +13,8 @@ if sys.version_info.major < 3:
 
 setup(
     name="untappdscr",
-    version="1.0.0",
-    description="An https://untappd.com scrapper.",
+    version="1.0.1",
+    description="An https://untappd.com scraper.",
     #long_description=readfile('README.md'),
     author="George Chousos",
     author_email="gxousos@gmail.com",

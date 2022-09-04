@@ -8,12 +8,12 @@ import xlwings    as     xw
 from   colour     import Color
 from   datetime   import datetime
 from   colorhash  import ColorHash
-from   untappdscr import UntappdScrapper
+from   untappdscr import UntappdScraper
 
 
-untappd         = UntappdScrapper((1,2),True)
-wb              = xw.Book        ('untappd.xlsx')
-sheet           = wb.sheets      ['Sheet1']
+untappd         = UntappdScraper((1,2),True)
+wb              = xw.Book       ('untappd.xlsx')
+sheet           = wb.sheets     ['Sheet1']
 color_gradient1 = list(Color("red"   ).range_to(Color("green" ), 50 ))
 color_gradient2 = list(Color("yellow").range_to(Color("maroon"), 200))
 DATE_FORMAT     = "%d/%m/%Y, %H:%M:%S"

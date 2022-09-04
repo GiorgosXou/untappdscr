@@ -11,7 +11,7 @@ from   openpyxl.styles import Font
 from   colour          import Color
 from   datetime        import datetime
 from   colorhash       import ColorHash
-from   untappdscr      import UntappdScrapper
+from   untappdscr      import UntappdScraper
 
 
 
@@ -20,7 +20,7 @@ SCHEDULED_TIME            = '05:20' # HH:MM:(SS) Approximate time at which the p
 MAX_OFFSET_SCHEDULE_DELAY = 60 * 30 # 30 minutes MAX delay, to reduce bot like repeating behaviour 
 MIN_DELAY                 = 60 * 1  # 1  minutes 
 MAX_DELAY                 = 60 * 3  # 3  minutes
-untappd                   = UntappdScrapper((MIN_DELAY, MAX_DELAY),True)
+untappd                   = UntappdScraper((MIN_DELAY, MAX_DELAY),True)
 filename                  = __file__.rsplit(sep, 1)[0] + sep + 'untappd.xlsx' 
 wb                        = load_workbook(filename)
 sheet                     = wb.active 

@@ -1,8 +1,8 @@
 from partialformatter import PartialFormatter
-from untappdscr       import UntappdScrapper
+from untappdscr       import UntappdScraper
 
 
-untappd       = UntappdScrapper () 
+untappd       = UntappdScraper  () 
 formatter     = PartialFormatter()
 top_breweries = untappd.get_top_rated_breweries('Greece')
 

@@ -10,12 +10,12 @@ from   openpyxl.styles import Font
 from   colour          import Color
 from   datetime        import datetime
 from   colorhash       import ColorHash
-from   untappdscr      import UntappdScrapper
+from   untappdscr      import UntappdScraper
 
 
 
 filename        = __file__.rsplit(sep, 1)[0] + sep + 'untappd.xlsx' 
-untappd         = UntappdScrapper((1,2),True)
+untappd         = UntappdScraper((1,2),True)
 wb              = load_workbook(filename)
 sheet           = wb.active 
 color_gradient1 = list(Color("red"   ).range_to(Color("green" ), 50 ))

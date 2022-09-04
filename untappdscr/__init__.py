@@ -95,7 +95,7 @@ class User:
 
 
 
-class UntappdScrapper:
+class UntappdScraper:
     URL       = 'https://untappd.com/'
     users     = {}
     beers     = {}

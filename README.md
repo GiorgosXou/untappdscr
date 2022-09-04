@@ -3,8 +3,8 @@
 <img src="imgs/img1.png">
 </p>
 
-# Untappdscr V.1.0.0 🍻
-Is an [Untappd](https://untappd.com) scrapper made primarly for the public in collaboration with a private brewery company.
+# Untappdscr V.1.0.1 🍻
+Is an [Untappd](https://untappd.com) scraper made primarly for the public in collaboration with a private brewery company.
 
 
 ## Installation
@@ -15,13 +15,13 @@ pip3 install untappdscr --upgrade
 ## Usage
 Look into the `examples` folder, especially the `example_3.py` one.
 ```python
-from untappdscr import UntappdScrapper
-untappd = UntappdScrapper((1,2), True) # delay-range, debug-mode
-print(untappd.get_top_rated_breweries())
+from untappdscr import UntappdScraper
+untappd = UntappdScraper((1,2), True) # delay-range, debug-mode
+print(untappd.get_top_rated_beers())
 ```
 
 ## Brief Documentation
-* **UntappdScrapper**()
+* **UntappdScraper**()
 * * **get_beer_picker_list**(*self, htmldoc=None*)
 * * **get_brewery_picker_list**(*self, htmldoc=None*)
 * * **get_picker_lists**(*self*)

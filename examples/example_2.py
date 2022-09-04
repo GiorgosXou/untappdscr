@@ -1,6 +1,6 @@
 import distinctipy
 from partialformatter import PartialFormatter
-from untappdscr       import UntappdScrapper
+from untappdscr       import UntappdScraper
 from colour           import Color
 from x256             import x256
 
@@ -13,7 +13,7 @@ def get_color_for(value):
     return '\x1b[38;5;' + str(x256.from_hex(color_gradient[int(value*10)].get_hex_l()[1:])) + 'm'
 
 
-untappd         = UntappdScrapper () 
+untappd         = UntappdScraper  () 
 formatter       = PartialFormatter()
 top_breweries   = untappd.get_top_rated_breweries('Greece', picker=True)
 categories      = untappd.brewery_picker.types
