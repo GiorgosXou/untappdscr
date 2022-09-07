@@ -1,13 +1,14 @@
 # xlwings
 
-import time
-import random 
-import string
+import traceback
 import schedule
+import string
+import random 
+import time
 from   os              import sep
-from   openpyxl        import Workbook , load_workbook # seems like  openpyxl messes up with title's font colors so i won't use ...
+from   openpyxl        import load_workbook   # seems like  openpyxl messes up with title's font colors so i won't use ...
 from   openpyxl.styles import Font 
-from   tendo           import singleton                # https://stackoverflow.com/a/1265445/11465149
+from   tendo           import singleton       # https://stackoverflow.com/a/1265445/11465149
 from   colour          import Color
 from   datetime        import datetime
 from   colorhash       import ColorHash
@@ -22,7 +23,7 @@ MAX_OFFSET_SCHEDULE_DELAY = 60 * 30                                       # 30 m
 MIN_DELAY                 = 60 * 1                                        # 1  minutes
 MAX_DELAY                 = 60 * 3                                        # 3  minutes
 untappd                   = UntappdScraper((MIN_DELAY, MAX_DELAY),True)
-PATH                      = __file__.rsplit(sep, 1)[0] + sep              # Path where you want to look for the filename.xlsx
+PATH                      = __file__.rsplit(sep, 1)[0] + sep              # Path where you want to look for the filename.xlsx | python.3.8.10 Issues with it?
 filename                  = PATH + 'untappd.xlsx'
 wb                        = load_workbook(filename)
 sheet                     = wb.active
@@ -111,7 +112,7 @@ def print_breweries(_from, at, color='#000000'): # repeating code but nvm for no
         sheet.cell(i, coln + 12).value = brewery.details.location
         sheet.cell(i, coln + 12).font  = Font(color=color)
         sheet.cell(i, coln + 13).value = date_time # i know it repeats itself but i don't know how to manage it diferently on excel, so here we are..
-        sheet.cell(i, coln + 13).font = Font(color=date_color )
+        sheet.cell(i, coln + 13).font  = Font(color=date_color)
 
 
 def print_beers(_from, at): # repeating code but nvm for now
@@ -218,14 +219,14 @@ def print_top_rated_breweries(at, country='', type='', color='#217346', get_pick
 
 
 action_list = [
-    [print_breweries          , ('A4','AF4')                                  ], 
-    [print_beers              , ('B4','AU4')                                  ],
-    [print_venues             , ('C4','CE4')                                  ],
-    [print_top_rated_beers    , ('BI4')                                       ],
+    [print_breweries          , ('A4' , 'AF4')                                ], 
+    [print_beers              , ('B4' , 'AU4')                                ],
+    [print_venues             , ('C4' , 'CE4')                                ],
+    [print_top_rated_beers    , ('BI4', ''      )                             ],
     [print_top_rated_beers    , ('BT4', 'Greece')                             ],
     [print_top_rated_breweries, ('E4' , 'Greece', ''             , '#2F75B5') ],  
     [print_top_rated_breweries, ('N4' , 'Greece', 'micro_brewery', '#2F75B5') ], 
-    [print_top_rated_breweries, ('W4'                                       ) ],   
+    [print_top_rated_breweries, ('W4' , ''                                  ) ],   
 ]
 ACTIONS_LENGTH = len(action_list)
 
@@ -247,8 +248,8 @@ def main():
         print(f'~ {ACTIONS_LENGTH} actions are randomly scheduled to be performed every day around >= {SCHEDULED_TIME}')
         schedule.every().day.at(SCHEDULED_TIME).do(fetch_data)
         loop()
-    except Exception as ex:
-        error(ex)
+    except Exception:
+        error(traceback.format_exc())
 
 
 if __name__ == "__main__":

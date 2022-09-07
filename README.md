@@ -13,7 +13,7 @@ pip3 install untappdscr --upgrade
 ```
 
 ## Usage
-Look into the `examples` folder, especially the `example_3.py` one.
+Look into the `examples` folder, especially `example_4.py` & `5` .
 ```python
 from untappdscr import UntappdScraper
 untappd = UntappdScraper((1,2), True) # delay-range, debug-mode
