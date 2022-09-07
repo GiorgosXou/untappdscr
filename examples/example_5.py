@@ -222,11 +222,11 @@ action_list = [
     [print_breweries          , ('A4' , 'AF4')                                ], 
     [print_beers              , ('B4' , 'AU4')                                ],
     [print_venues             , ('C4' , 'CE4')                                ],
-    [print_top_rated_beers    , ('BI4', ''      )                             ],
+    [print_top_rated_beers    , ('BI4',         )                             ],
     [print_top_rated_beers    , ('BT4', 'Greece')                             ],
     [print_top_rated_breweries, ('E4' , 'Greece', ''             , '#2F75B5') ],  
     [print_top_rated_breweries, ('N4' , 'Greece', 'micro_brewery', '#2F75B5') ], 
-    [print_top_rated_breweries, ('W4' , ''                                  ) ],   
+    [print_top_rated_breweries, ('W4' ,                                     ) ],   
 ]
 ACTIONS_LENGTH = len(action_list)
 
