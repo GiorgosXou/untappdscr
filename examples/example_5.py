@@ -243,6 +243,12 @@ def loop():
         time.sleep(1)
 
 
+def reset():
+    global wb, sheet 
+    wb    = load_workbook(filename)
+    sheet = wb.active
+
+
 def main():
     try:
         print(f'~ {ACTIONS_LENGTH} actions are randomly scheduled to be performed every day around >= {SCHEDULED_TIME}')
@@ -250,6 +256,8 @@ def main():
         loop()
     except Exception:
         error(traceback.format_exc())
+        reset()
+        loop()
 
 
 if __name__ == "__main__":
