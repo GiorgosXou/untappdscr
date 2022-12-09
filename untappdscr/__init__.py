@@ -108,26 +108,26 @@ class UntappdScraper:
     } 
     beer_picker     = None
     brewery_picker  = None
-    debug_mode      = False
-    delay_range     = None
     request_counter = 0    
     
-    def __init__(self, delay=None, debug_mode=False) -> None:
+    def __init__(self, delay=None, max_retries=10, retry_delay=120, debug_mode=False) -> None:
         self.debug_mode  = debug_mode
         self.delay_range = delay
+        self.max_retries = max_retries
+        self.retry_delay = retry_delay
 
 
-    def __get_data_from(self, url_path): # TODO: coockies= login-cockies only for special request
-        try: # Setting up and Making the Web Call
-            self.request_counter += 1
-            if self.delay_range : sleep(randint(*self.delay_range)) # * tuple
-            if self.debug_mode  : print(f'- GET REQUEST #{self.request_counter}: {url_path}')  
-            response = requests.get(self.URL + url_path, headers=self.headers,  verify=True, cookies=self.cookies) 
-            return response.text
-        except Exception as e:
-            print('[!]   ERROR - Untappd issue: {}'.format(str(e)))
-             
+    def __get_data_from(self, url_path, retries=0): # TODO: coockies= login-cockies only for special request
+        self.request_counter += 1
+        if self.delay_range : sleep(randint(*self.delay_range)) # * tuple
+        if self.debug_mode  : print(f'- GET REQUEST #{self.request_counter}: {url_path}')  
+        response = requests.get(self.URL + url_path, headers=self.headers,  verify=True, cookies=self.cookies) 
+        if not response.text and retries != self.max_retries:
+            sleep(self.retry_delay * retries)
+            self.__get_data_from(url_path,retries + 1)
+        return response.text
     
+
     def __check_if_page_exits(self, html_doc):
         assert html_doc.find('head').find('title').next not in ('Untappd | 404', 'Untappd | Error'), ValueError(html_doc.find('head').find('title').next) 
     
