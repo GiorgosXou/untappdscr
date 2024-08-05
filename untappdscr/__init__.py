@@ -3,6 +3,7 @@ from   time          import sleep
 from   random        import randint
 from   dacite        import from_dict
 from   dataclasses   import dataclass
+from   requests.adapters import HTTPAdapter, Retry
 import requests
 import re
 
