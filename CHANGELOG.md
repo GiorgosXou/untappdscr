@@ -1,3 +1,9 @@
+# v.DEVELOPMENT
+
+> [!NOTE]
+> **[CHANGELOG.md is archived, from now on version-logs are at releases](https://github.com/GiorgosXou/untappdscr/releases)**
+
+
 # v.1.0.3
 * **FIXED:** `install_requires=['BeautifulSoup4', 'dacite']`
 * **FIXED:** [Solve bad request issues](https://github.com/GiorgosXou/untappdscr/issues/1)

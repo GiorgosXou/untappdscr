@@ -1,9 +1,10 @@
 
 <p align="center">
+<img src="imgs/img3.jpg">
 <img src="imgs/img1.png">
 </p>
 
-# Untappdscr V.1.0.3 🍻
+# UNTAPPDSCR V.1.1.0 🍻
 Is an [Untappd](https://untappd.com) scraper made primarly for the public in collaboration with a private brewery company.
 
 
@@ -13,10 +14,10 @@ pip3 install untappdscr --upgrade
 ```
 
 ## Usage
-Look into the `examples` folder, especially `example_4.py` & `5` .
+Look into the `examples` folder, especially `example_5.py`.
 ```python
 from untappdscr import UntappdScraper
-untappd = UntappdScraper((1,2), True) # delay-range, debug-mode
+untappd = UntappdScraper((1,2), debug_mode=True) # delay-range, debug-mode
 print(untappd.get_top_rated_beers())
 ```
 
@@ -33,10 +34,13 @@ print(untappd.get_top_rated_beers())
 
 
 ## Why though?
-Because [Untappd](https://untappd.com) stoped accepting new applications a long time ago.
-<p align="center">
-<img src="imgs/img2.jpg">
-</p>
+Because [Untappd stoped](https://untappd.com/api/register) accepting new applications a long time ago.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/GiorgosXou/untappdscr/main/imgs/img0.jpg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/GiorgosXou/untappdscr/main/imgs/img2.jpg">
+  <img alt="Shows a black logo in light color mode and a white one in dark color mode." src="https://user-images.githubusercontent.com/25423296/163456779-a8556205-d0a5-45e2-ac17-42d089e3c3f8.png">
+</picture>
 
 
 ## Research
