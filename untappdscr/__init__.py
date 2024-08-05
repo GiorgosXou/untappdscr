@@ -98,7 +98,8 @@ class User:
 class UntappdScraper:
     URL = 'https://untappd.com/'
 
-    def __init__(self, delay=None, max_retries=7, debug_mode=False) -> None:
+    def __init__(self, delay=None, max_retries=7, debug_mode=False, keep_reference_track=False ) -> None:
+        self.keep_reference_track = keep_reference_track
         self.users     = {}
         self.beers     = {}
         self.venues    = {}
@@ -207,6 +208,10 @@ class UntappdScraper:
                     popular_venues = None                                                                                                  , # At the momment 
                     stats          = None
             )   }
+            if not self.keep_reference_track:
+                top_rated_breweries[breweryname] = from_dict(Brewery, brewery_dict)
+                continue
+            brewery = self.breweries.get(breweryname)
             if brewery: 
                 if brewery.details:
                     brewery_dict['details'].claimed        = brewery.details.claimed 
@@ -235,10 +240,11 @@ class UntappdScraper:
                 name        = beer_details[1].contents[0].contents[0] ,
                 details     = None                                    ,
             )
+            if self.keep_reference_track: self.breweries[breweryname] = self.breweries.get(breweryname) or brebery_obj
             beer_dict   = { # I won't use if because ratings can change + other stuff
                 'id'      : _id                                     ,
                 'name'    : beer_details[0].contents[0].contents[0] ,
-                'brewery' : self.breweries[breweryname]             ,
+                'brewery' : self.breweries[breweryname] if self.keep_reference_track else brebery_obj,
                 'details' : Beer.BeerDetails(
                     desc_half    =               description.contents[0]                                                                          , 
                     date_added   =               details    .find('p'  , {'class', 'date'  }).next.strip().split(' ')[1].strip()                  ,
@@ -250,6 +256,10 @@ class UntappdScraper:
                     stats        = None                                                                                                           ,
                     loyals       = None
             )   } #beer-details
+            if not self.keep_reference_track: # TODO: no need for condition in loop, just make 2 functions and assign it to a var
+                top_rated_beers[_id] = from_dict(Beer, beer_dict)
+                continue
+            beer = self.beers.get(_id)
             if beer: 
                 if beer.details: 
                     beer_dict['details'].stats = beer.details.stats 
@@ -274,10 +284,11 @@ class UntappdScraper:
             name        = brewery.next ,
             details     = None         ,
         )
+        if self.keep_reference_track: self.breweries[breweryname] = self.breweries.get(breweryname) or brebery_obj
         beer_dict   = { # I won't use if because ratings can change + other stuff
             'id'      : _id                         ,
             'name'    : beer_item.find('h1').next   ,
-            'brewery' : self.breweries[breweryname] ,
+            'brewery' : self.breweries[breweryname] if self.keep_reference_track else brebery_obj,
             'details' : Beer.BeerDetails(
                 desc_half    =               description.next                                                                                    ,
                 date_added   =               None                                                                                                ,
@@ -294,6 +305,8 @@ class UntappdScraper:
                 )                                                                                                                                ,
                 loyals       = None # At the momment
         )   } #beer-details
+        if not self.keep_reference_track: return from_dict(Beer, beer_dict)
+        beer = self.beers.get(_id)
         if beer: 
             if beer.details:
                 beer_dict['details'].date_added = beer.details.date_added 
@@ -328,7 +341,11 @@ class UntappdScraper:
                         stats        = None,
                         loyals       = None
                 )   )
-                popular_venues[_id] = self.venues[_id]
+                if not self.keep_reference_track: # TODO: no need for condition in loop, just make 2 functions and assign it to a var
+                    popular_venues[_id] = venue_obj
+                else:
+                    self.venues[_id] = self.venues.get(_id) or venue_obj
+                    popular_venues[_id] = self.venues[_id]
         brewery_dict    = {
             'name'        : content.find('h1').next.strip() ,
             'breweryname' : breweryname                     ,
@@ -348,6 +365,7 @@ class UntappdScraper:
                     you     = self.__int1(stats[3].find('a') .next) ,
                     likes   = self.__int1(like_count         .next) if like_count else None ,
         )   )   }
+        if not self.keep_reference_track: return from_dict(Brewery,brewery_dict)
         if breweryname in self.breweries: 
                self.breweries[breweryname] .__dict__.   update(brewery_dict)
         else:  self.breweries[breweryname] = from_dict(Brewery,brewery_dict)
@@ -383,6 +401,7 @@ class UntappdScraper:
                 ) if stats else None,
                 loyals       =  None  # TODO: PATRONS IF NONE because some venues don't have them
         )   }
+        if not self.keep_reference_track: return from_dict(Venue,venue_dict)
         if _id in self.venues: 
                self.venues[_id] .__dict__. update(venue_dict)
         else:  self.venues[_id] = from_dict(Venue,venue_dict)
