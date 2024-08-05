@@ -248,7 +248,7 @@ class UntappdScraper:
                 'name'    : beer_details[0].contents[0].contents[0] ,
                 'brewery' : self.breweries[breweryname] if self.keep_reference_track else brebery_obj,
                 'details' : Beer.BeerDetails(
-                    desc_half    =               description.contents[0]                                                                          , 
+                    desc_half    =               description.contents[0].strip()                                                                  , 
                     date_added   =               details    .find('p'  , {'class', 'date'  }).next.strip().split(' ')[1].strip()                  ,
                     ratings      =        int   (details    .find('p'  , {'class', 'raters'}).next.strip().split(' ')[0].strip().replace(',','')) , #1 I think the same goes for beers too
                     IBU          = self.__int2  (details    .find('p'  , {'class', 'ibu'   }).next.strip().split(' ')[0].strip())                 ,
@@ -291,7 +291,7 @@ class UntappdScraper:
             'name'    : beer_item.find('h1').next   ,
             'brewery' : self.breweries[breweryname] if self.keep_reference_track else brebery_obj,
             'details' : Beer.BeerDetails(
-                desc_half    =               description.next                                                                                    ,
+                desc_half    =               description.next.strip()                                                                            ,
                 date_added   =               None                                                                                                ,
                 ratings      =        int   (details    .find('p'  , {'class', 'raters'   }).next.strip().split(' ')[0].strip().replace(',','')) , #1 I think the same goes for beers too
                 IBU          = self.__int2  (details    .find('p'  , {'class', 'ibu'      }).next.strip().split(' ')[0].strip())                 ,
