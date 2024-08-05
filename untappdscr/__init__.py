@@ -393,9 +393,13 @@ class UntappdScraper:
 
 
 """
+- Checkins can be reduced to just the id, eg. https://untappd.com/user/anelena/checkin/1405471290 to https://untappd.com/c/1405471290
+- Not all venues have activity at front-page, so to ensure activity you have to append /activity to the link but won't work with /venue/{id} type of link
+
 ===============================================================
                           Thoughts
 ===============================================================
+- funny name would had been the name untappable instead of UntappdScraper lol
 * namedtuple vs dataclass ?
 * https://github.com/ultrafunkamsterdam/undetected-chromedriver
 * intrestingly you can get beer by id with /b/whatever/id and
