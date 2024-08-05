@@ -236,9 +236,8 @@ class UntappdScraper:
             beer_details = beer_item.findAll('p'  , {'class': ('name','style', 'details') })
             description  = beer_item.find   ('p'  , {'class': 'desc desc-half-' + str(_id)})
             details      = beer_item.find   ('div', {'class': 'details'                   })
-            beer         = self.beers.get(_id)
             breweryname  = beer_details[1].contents[0].attrs['href'][1:] 
-            self.breweries[breweryname] = self.breweries.get(breweryname) or Brewery(  
+            brebery_obj  = Brewery(  
                 breweryname = breweryname                             ,                           
                 name        = beer_details[1].contents[0].contents[0] ,
                 details     = None                                    ,
@@ -280,9 +279,8 @@ class UntappdScraper:
         brewery      = beer_item.find('p'  , {'class': 'brewery'                   }).find('a')
         description  = beer_item.find('div', {'class': 'beer-descrption-read-more' })
         details      = beer_item.find('div', {'class': 'details'                   })
-        beer         = self.beers.get(_id)
         breweryname  = brewery.attrs['href'][1:]
-        self.breweries[breweryname] = self.breweries.get(breweryname) or Brewery( 
+        brebery_obj  = Brewery( 
             breweryname = breweryname  ,                           
             name        = brewery.next ,
             details     = None         ,
@@ -327,10 +325,11 @@ class UntappdScraper:
         pop_venue_itms = html_doc.find('h3'  , text='Popular Locations')
         popular_venues = {}
         if pop_venue_itms: # you never know, a brewery might not have any poplocations or locations at all
+            venue_obj = None
             for venue in pop_venue_itms.parent.findAll('div' , {'class': 'item' }):
                 _id  = int(venue.find('a').attrs['href'].split('/')[-1].strip())
                 addr = venue.find('span', {'class': 'location'}) 
-                self.venues[_id] = self.venues.get(_id) or Venue(
+                venue_obj = Venue(
                     id          = _id , 
                     name        = venue.find('span', {'class': 'name'}).next.strip(), 
                     category    = None,   
