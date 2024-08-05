@@ -1,47 +1,57 @@
-# xlwings
+# openpyxl
 
 import traceback
 import schedule
 import string
 import random 
 import time
-from   os              import sep
-from   openpyxl        import load_workbook   # seems like  openpyxl messes up with title's font colors so i won't use ...
-from   openpyxl.styles import Font 
-from   tendo           import singleton       # https://stackoverflow.com/a/1265445/11465149
-from   colour          import Color
-from   datetime        import datetime
-from   colorhash       import ColorHash
-from   untappdscr      import UntappdScraper
+from   os                  import sep
+from   openpyxl            import load_workbook   # seems like  openpyxl messes up with title's font colors so i won't use ...
+from   openpyxl.styles     import Font 
+from   tendo               import singleton       # https://stackoverflow.com/a/1265445/11465149
+from   colour              import Color
+from   datetime            import datetime
+from   colorhash           import ColorHash
+from   untappdscr          import UntappdScraper
+from   requests.exceptions import ConnectionError
+from   platform            import system
 
 
 
-me                        = singleton.SingleInstance()                    # will sys.exit(-1) if other instance is running
 DATE_FORMAT               = '%d/%m/%Y, %H:%M:%S'
-SCHEDULED_TIME            = '05:20'                                       # HH:MM:(SS) Approximate time at which the proccess is scheduled to start
-MAX_OFFSET_SCHEDULE_DELAY = 60 * 30                                       # 30 minutes MAX delay, to reduce bot like repeating behaviour
-MIN_DELAY                 = 60 * 1                                        # 1  minutes
-MAX_DELAY                 = 60 * 3                                        # 3  minutes
-untappd                   = UntappdScraper((MIN_DELAY, MAX_DELAY),True)
-PATH                      = __file__.rsplit(sep, 1)[0] + sep              # Path where you want to look for the filename.xlsx | python.3.8.10 Issues with it?
-filename                  = PATH + 'untappd.xlsx'
-wb                        = load_workbook(filename)
-sheet                     = wb.active
-color_gradient1           = list(Color("red"   ).range_to(Color("green" ), 50 ))
-color_gradient2           = list(Color("yellow").range_to(Color("maroon"), 200))
+SCHEDULED_TIME            = '05:20'                           # HH:MM:(SS) Approximate time at which the proccess is scheduled to run each day
+MAX_CONSECUTIVE_NET_FAILS = 4                                 # if it fails for more than this number of days consecutively, to establish a connection, then it shows-up the error.txt
+MAX_OFFSET_SCHEDULE_DELAY = 60 * 30                           # 30 minutes MAX delay, to reduce bot like repeating behaviour
+MIN_DELAY                 = 60 * 1                            # 1  minutes
+MAX_DELAY                 = 60 * 3                            # 3  minutes
+PATH                      = __file__.rsplit(sep, 1)[0] + sep  # Path where you want to look for the FILE.xlsx | python.3.8.10 Issues with it?
+FILE                      = PATH + 'untappd.xlsx'
+DEFAULT_OPENER            = 'notepad' if 'Windows' == system() else 'open' if 'Darwin' == system()  else 'xdg-open' # default opener based on system, for windows I choose notepad instead of start
 
 
-def error(ex):
-    import platform
+me               = singleton.SingleInstance()  # will sys.exit(-1) if other instance is running
+untappd          = UntappdScraper((MIN_DELAY, MAX_DELAY), debug_mode = True)
+wb               = load_workbook(FILE)
+sheet            = wb.active
+color_gradient1  = list(Color("red"   ).range_to(Color("green" ), 51 ))
+color_gradient2  = list(Color("yellow").range_to(Color("maroon"), 200))
+network_failures = 0 # counter for MAX_CONSECUTIVE_NET_FAILS
+
+
+
+def handle_error(traceback, e):
     import subprocess
-    from os import sep
-    OPERATING_SYSTEM = platform.system()
-    IS_WINODWS       = ('Windows' == OPERATING_SYSTEM)
-    DEFAULT_OPENER   = 'start' if IS_WINODWS else 'open' if 'Darwin' == OPERATING_SYSTEM  else 'xdg-open'
-    with open("errors.txt", "a+") as file_object:
-        file_object.write(f'{datetime.now()}\n{ex}\n\n\n\n')
-    print( __file__.rsplit(sep, 1)[0] + sep + 'errors.txt')
-    subprocess.Popen([DEFAULT_OPENER, PATH + 'errors.txt'], shell=IS_WINODWS)
+    global network_failures
+    with open(PATH + "errors.txt", "a+") as file_object:
+        file_object.write(f'{datetime.now()}\n{traceback}\n\n\n\n')
+    print(PATH + 'errors.txt')
+    if isinstance(e, ConnectionError): 
+        network_failures += 1
+        if network_failures == MAX_CONSECUTIVE_NET_FAILS:
+            network_failures = 0
+        else:
+            return
+    subprocess.Popen(DEFAULT_OPENER + ' "' + PATH + 'errors.txt"', shell=True)
 
 
 def num2col(num): # https://stackoverflow.com/a/23862195/11465149
@@ -231,10 +241,13 @@ action_list = [
 ACTIONS_LENGTH = len(action_list)
 
 def fetch_data():
+    global network_failures
     time.sleep(random.randint(0,MAX_OFFSET_SCHEDULE_DELAY))        # Random delay between 0 - MAX... minutes
     for i in random.sample(range(ACTIONS_LENGTH), ACTIONS_LENGTH): # Perform all actions randomly and not repeatedly
         action_list[i][0](*action_list[i][1])
-    wb.save(filename)                                              # Save data to the file-name
+    wb.save(FILE)                                                  # Save data to the file-name
+    network_failures = 0                                           # reset consecutive-network_failures counter
+
 
 
 def loop():
@@ -245,7 +258,7 @@ def loop():
 
 def reset():
     global wb, sheet 
-    wb    = load_workbook(filename)
+    wb    = load_workbook(FILE)
     sheet = wb.active
 
 
@@ -254,8 +267,8 @@ def main():
         print(f'~ {ACTIONS_LENGTH} actions are randomly scheduled to be performed every day around >= {SCHEDULED_TIME}')
         schedule.every().day.at(SCHEDULED_TIME).do(fetch_data)
         loop()
-    except Exception:
-        error(traceback.format_exc())
+    except Exception as e:
+        handle_error(traceback.format_exc(), e)
         reset()
         loop()
 

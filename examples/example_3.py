@@ -11,7 +11,7 @@ from   colorhash  import ColorHash
 from   untappdscr import UntappdScraper
 
 
-untappd         = UntappdScraper((1,2),True)
+untappd         = UntappdScraper((1,2), debug_mode=True)
 wb              = xw.Book       ('untappd.xlsx')
 sheet           = wb.sheets     ['Sheet1']
 color_gradient1 = list(Color("red"   ).range_to(Color("green" ), 50 ))
