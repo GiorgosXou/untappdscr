@@ -1,8 +1,9 @@
-from   bs4           import BeautifulSoup
-from   time          import sleep
-from   random        import randint
-from   dacite        import from_dict
-from   dataclasses   import dataclass
+from   bs4               import BeautifulSoup
+from   enum              import Enum
+from   time              import sleep
+from   random            import randint
+from   dacite            import from_dict
+from   dataclasses       import dataclass
 from   requests.adapters import HTTPAdapter, Retry
 import requests
 import re
@@ -26,10 +27,26 @@ class Stats:
     monthly : int
     you     : int
 
+
+class ActivityFilter(Enum):
+    GLOBAL  = ''
+    FRIENDS = '?filter=friends'
+    YOU     = '?filter=you'
+
+
+# @dataclass      
+# class Checkin: # activity-checkins doesn't always have "...at place"
+#     user     : 'User'
+#     drinking : 'Beer'
+#     at       : 'Venue'
+
 @dataclass
 class Brewery:
     @dataclass
     class BreweryDetails: #TODO: id from label |  Maybe add a dict of beers out of stats | and maybe add subsidiary too like with /sixpoint | discontinued for /w/brew-it-up/7220 class="oop error" 
+        # @dataclass      
+        # class BreweryCheckin(Checkin):
+        #     pass
         @dataclass      
         class BreweryStats(Stats):
             likes : int         
@@ -41,6 +58,7 @@ class Brewery:
         beer_count     : int
         claimed        : bool    
         popular_venues : dict
+        # activity       : dict[int, BreweryCheckin]
         stats          : BreweryStats
     breweryname : str
     name        : str
@@ -90,10 +108,11 @@ class Venue:
 @dataclass
 class User:
     @dataclass
-    class UserDetails:     
+    class UserDetails:
         loyal_to : dict # of Venue(s)
+    checkins : int  # from venue
     username : str
-
+    name     : str
 
 
 class UntappdScraper:
@@ -197,7 +216,6 @@ class UntappdScraper:
             brewery_details = brewery_item   .find   ('div')
             breweryname     = brewery_details.find   ('a'  ).attrs['href'][1:]
             type_location   = brewery_details.findAll('p'  )
-            brewery         = self.breweries .get    (breweryname)
             brewery_dict    = {  
                 'name'        : brewery_details.find('a').next ,
                 'breweryname' : breweryname                    ,
@@ -268,7 +286,7 @@ class UntappdScraper:
                     beer_dict['details'].stats = beer.details.stats 
                     beer_dict['details'].stats = beer.details.loyals
                 beer              .__dict__.update(beer_dict)
-            else:self.beers[_id] = from_dict(Beer, beer_dict)            
+            else:self.beers[_id] = from_dict(Beer, beer_dict)
             top_rated_beers[_id] = self.beers[_id]
         return top_rated_beers 
 
@@ -313,12 +331,38 @@ class UntappdScraper:
             if beer.details:
                 beer_dict['details'].date_added = beer.details.date_added 
             beer                .__dict__.update(beer_dict)
-        else:  self.beers[_id] = from_dict(Beer, beer_dict)            
+        else:  self.beers[_id] = from_dict(Beer, beer_dict)
         return self.beers[_id]        
     
+
+    # def __parse_brewery_activity(self, html_doc): # TODO: no time for now, but shame on me for pushing it in repo like that
+    #     activity_stream = html_doc.find('div', {'id': 'main-stream'})
+    #     if not activity_stream: return None # just in case, you never know ...
+    #     checkins = activity_stream.findAll('div', {'class': 'item'})
+    #     if not checkins: return None
+    #     activity = {}
+    #     id = a = username = user_obj = None
+    #     for checkin in checkins:
+    #         id = int(checkin.attrs['data-checkin-id'])
+    #         a = checkin.find('p', {'class': 'text'}).findAll('a')
+    #         username = a[0].attrs['href'].split('/')[-1].strip()
+    #         user_obj = User(
+    #             username = username,
+    #             name = a[0].find('img').attrs['alt'].strip()
+    #         )
+    #         # beer_obj
+    #         # venue_obj #if len(a) > 3 (meaning == 4 but just in case)
+    #         if self.keep_reference_track: self.users[username] = self.users.get(username) or user_obj
+    #         activity[id] = Brewery.BreweryDetails.BreweryCheckin(
+    #             user = user_obj,
+    #             beer = None, #from
+    #             venue = None, #if it exists
+    #
+    #         )
+
     
-    def get_brewery(self, breweryname:str, activity_pages=1): # brewery url name, in extreme cases path
-        html_doc       = self.__get_document_from(breweryname)
+    def get_brewery(self, breweryname:str, activity_pages:int=1, filter:ActivityFilter=ActivityFilter.GLOBAL): # brewery url name, in extreme cases path
+        html_doc       = self.__get_document_from(breweryname + filter.value)
         content        = html_doc.find('div' , {'class': 'content'    })
         details        = html_doc.find('div' , {'class': 'details'    })
         like_count     = html_doc.find('abbr', {'class': 'like-count' }) 
@@ -361,6 +405,7 @@ class UntappdScraper:
                 beer_count     = int  (details.find('a'                        ).next.strip().split(' ')[0].strip().replace(',','')) ,
                 claimed        = True if 'claimed' in details.attrs['class'] else False                                              ,
                 popular_venues = popular_venues                                                                                      , # At the momment 
+                # activity       = self.__parse_brewery_activity(html_doc) if not activity_pages < 1 else None,
                 stats          = Brewery.BreweryDetails.BreweryStats(
                     total   = self.__int1(stats[0]           .next) , 
                     unique  = self.__int1(stats[1]           .next) ,
@@ -376,7 +421,7 @@ class UntappdScraper:
         
     
     def get_venue(self, _id:int, activity_pages=1, stats=True): #It does or not exists in venue dict, i should always recheck
-        html_doc            = self.__get_document_from(f'venue/{_id}'               )
+        html_doc            = self.__get_document_from(f'venue/{_id}'               ) # if activity_pages !=0 and find("p", string="See All Activity") then self.__get_document_from(f'v/name/{id}') to prevent multiple bot like requests
         header_details      = html_doc      .find('div', {'class': 'header-details'}) 
         tmp1                = header_details.find('div', {'class': 'logo'          }) # logo and is_verified
         venue_name_category = header_details.find('div', {'class': 'venue-name'    })
