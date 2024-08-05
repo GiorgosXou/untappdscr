@@ -96,25 +96,24 @@ class User:
 
 
 class UntappdScraper:
-    URL       = 'https://untappd.com/'
-    users     = {}
-    beers     = {}
-    venues    = {}
-    breweries = {}
-    cookies   = {}
-    headers   = { # , 'X-Requested-With': 'XMLHttpRequest'XMLHttpRequest ana 25 mono gia to more_friends?
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36', 
-        'X-Requested-With': 'XMLHttpRequest'
-    } 
-    beer_picker     = None
-    brewery_picker  = None
-    request_counter = 0    
-    
-    def __init__(self, delay=None, max_retries=10, retry_delay=120, debug_mode=False) -> None:
-        self.debug_mode  = debug_mode
-        self.delay_range = delay
-        self.max_retries = max_retries
-        self.retry_delay = retry_delay
+    URL = 'https://untappd.com/'
+
+    def __init__(self, delay=None, max_retries=7, debug_mode=False) -> None:
+        self.users     = {}
+        self.beers     = {}
+        self.venues    = {}
+        self.breweries = {}
+        self.cookies   = {}
+        self.headers   = { # , 'X-Requested-With': 'XMLHttpRequest'XMLHttpRequest ana 25 mono gia to more_friends?
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36', 
+            'X-Requested-With': 'XMLHttpRequest'
+        } 
+        self.beer_picker     = None
+        self.brewery_picker  = None
+        self.request_counter = 0    
+        self.debug_mode     = debug_mode
+        self.delay_range    = delay
+        self.max_retries    = max_retries
 
 
     def __get_data_from(self, url_path, retries=0): # TODO: coockies= login-cockies only for special request
