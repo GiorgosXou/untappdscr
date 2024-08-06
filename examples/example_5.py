@@ -6,6 +6,7 @@ import string
 import random 
 import time
 from   os                  import sep
+from   gc                  import collect         # WARN: for openpyxl - "Memory use is fairly high in comparison with other libraries and applications and is approximately 50 times the original file size, e.g. 2.5 GB for a 50 MB Excel file." https://openpyxl.readthedocs.io/en/stable/performance.html
 from   openpyxl            import load_workbook   # seems like  openpyxl messes up with title's font colors so i won't use ...
 from   openpyxl.styles     import Font 
 from   tendo               import singleton       # https://stackoverflow.com/a/1265445/11465149
@@ -31,8 +32,6 @@ DEFAULT_OPENER            = 'notepad' if 'Windows' == system() else 'open' if 'D
 
 me               = singleton.SingleInstance()  # will sys.exit(-1) if other instance is running
 untappd          = UntappdScraper((MIN_DELAY, MAX_DELAY), debug_mode = True)
-wb               = load_workbook(FILE)
-sheet            = wb.active
 color_gradient1  = list(Color("red"   ).range_to(Color("green" ), 50 )) # WARN: Althought 51 is the correct we are using 50 because there's no way of a rating being a solid 5.0 AND due to Excel having some weird issues displaying some colors
 color_gradient2  = list(Color("yellow").range_to(Color("maroon"), 200))
 network_failures = 0 # counter for MAX_CONSECUTIVE_NET_FAILS
@@ -241,12 +240,16 @@ action_list = [
 ACTIONS_LENGTH = len(action_list)
 
 def fetch_data():
-    global network_failures
+    global network_failures, wb, sheet
+    wb    = load_workbook(FILE)
+    sheet = wb.active
     time.sleep(random.randint(0,MAX_OFFSET_SCHEDULE_DELAY))        # Random delay between 0 - MAX... minutes
     for i in random.sample(range(ACTIONS_LENGTH), ACTIONS_LENGTH): # Perform all actions randomly and not repeatedly
         action_list[i][0](*action_list[i][1])
     wb.save(FILE)                                                  # Save data to the file-name
+    wb = sheet = None                                              # Drop reference count of the object to zero
     network_failures = 0                                           # reset consecutive-network_failures counter
+    collect()                                                      # Force garbage-collector to clean
 
 
 
@@ -256,12 +259,6 @@ def loop():
         time.sleep(1)
 
 
-def reset():
-    global wb, sheet 
-    wb    = load_workbook(FILE)
-    sheet = wb.active
-
-
 def main():
     try:
         print(f'~ {ACTIONS_LENGTH} actions are randomly scheduled to be performed every day around >= {SCHEDULED_TIME}')
@@ -269,7 +266,6 @@ def main():
         loop()
     except Exception as e:
         handle_error(traceback.format_exc(), e)
-        reset()
         loop()
 
 
