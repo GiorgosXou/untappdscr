@@ -33,7 +33,7 @@ me               = singleton.SingleInstance()  # will sys.exit(-1) if other inst
 untappd          = UntappdScraper((MIN_DELAY, MAX_DELAY), debug_mode = True)
 wb               = load_workbook(FILE)
 sheet            = wb.active
-color_gradient1  = list(Color("red"   ).range_to(Color("green" ), 51 ))
+color_gradient1  = list(Color("red"   ).range_to(Color("green" ), 50 )) # WARN: Althought 51 is the correct we are using 50 because there's no way of a rating being a solid 5.0 AND due to Excel having some weird issues displaying some colors
 color_gradient2  = list(Color("yellow").range_to(Color("maroon"), 200))
 network_failures = 0 # counter for MAX_CONSECUTIVE_NET_FAILS
 

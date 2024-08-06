@@ -18,7 +18,7 @@ filename        = __file__.rsplit(sep, 1)[0] + sep + 'untappd.xlsx'
 untappd         = UntappdScraper((1,2),debug_mode=True)
 wb              = load_workbook(filename)
 sheet           = wb.active 
-color_gradient1 = list(Color("red"   ).range_to(Color("green" ), 50 ))
+color_gradient1 = list(Color("red"   ).range_to(Color("green" ), 50 )) # WARN: Althought 51 is the correct we are using 50 because there's no way of a rating being a solid 5.0 AND due to Excel having some weird issues displaying some colors
 color_gradient2 = list(Color("yellow").range_to(Color("maroon"), 200))
 DATE_FORMAT     = "%d/%m/%Y, %H:%M:%S"
 
