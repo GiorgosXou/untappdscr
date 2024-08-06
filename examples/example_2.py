@@ -9,7 +9,7 @@ WHITE          = '\x1b[38;5;' + str(x256.from_hex('ffffff')) + 'm'
 ORANGE         = '\x1b[38;5;' + str(x256.from_hex('FFD580')) + 'm'
 color_gradient = list(Color("red").range_to(Color("green"),51))
 
-def get_color_for(value) : return '\x1b[38;5;' + str(x256.from_hex(color_gradient[int(value)*10].get_hex_l()[1:])) + 'm'
+def get_color_for(value) : return '\x1b[38;5;' + str(x256.from_hex(color_gradient[int(value*10)].get_hex_l()[1:])) + 'm'
 def get_hash_color(value): return '\x1b[38;5;' + str(x256.from_rgb(*ColorHash(value).rgb)) + 'm'
 
 untappd         = UntappdScraper() 
