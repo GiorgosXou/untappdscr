@@ -34,7 +34,7 @@ print(untappd.get_top_rated_beers())
 
 
 ## Why though?
-Because [Untappd stoped](https://untappd.com/api/register) accepting new applications a long time ago.
+Because [Untappd stopped](https://untappd.com/api/register) accepting new applications a long time ago.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/GiorgosXou/untappdscr/main/imgs/img0.jpg">
