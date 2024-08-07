@@ -181,8 +181,9 @@ def print_top_rated_beers(at, country='', type='', get_picker=False): # col, row
     coln       = col2num(col)
     cole       = num2col(coln+9)
     beers      = untappd.get_top_rated_beers(country, type, get_picker).items()
-    date_time  = datetime.now().second.strftime(DATE_FORMAT)
-    date_color = ColorHash(date_time).hex.split('#')[1]   
+    date_now   = datetime.now()
+    date_time  = date_now.strftime(DATE_FORMAT)
+    date_color = ColorHash(date_now.second).hex.split('#')[1]
     sheet.move_range(f'{col}{row}:{cole}{sheet.max_row}', rows=len(beers), cols=0)
     for i,(_, beer) in enumerate(beers,row):
         sheet.cell(i, coln     ).value = beer.details.discontinued
@@ -208,8 +209,9 @@ def print_top_rated_breweries(at, country='', type='', color='#217346', get_pick
     coln       = col2num(col)
     cole       = num2col(coln+7)
     breweries  = untappd.get_top_rated_breweries(country, type, get_picker).items()
-    date_time  = datetime.now().second.strftime(DATE_FORMAT)
-    date_color = ColorHash(date_time).hex.split('#')[1]
+    date_now   = datetime.now()
+    date_time  = date_now.strftime(DATE_FORMAT)
+    date_color = ColorHash(date_now.second).hex.split('#')[1]
     sheet.move_range(f'{col}{row}:{cole}{sheet.max_row}', rows=len(breweries), cols=0)
     for i,(_, brewery) in enumerate(breweries,row):
         sheet.cell(i, coln    ).value = brewery.details.beer_count
