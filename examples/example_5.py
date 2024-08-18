@@ -39,8 +39,10 @@ network_failures = 0 # counter for MAX_CONSECUTIVE_NET_FAILS
 
 
 def handle_error(traceback, e):
+    global network_failures, wb, sheet
+    wb = sheet = None # Drop reference count of the object to zero
+    collect()         # Force garbage-collector to clean
     import subprocess
-    global network_failures
     with open(PATH + "errors.txt", "a+") as file_object:
         file_object.write(f'{datetime.now()}\n{traceback}\n\n\n\n')
     print(PATH + 'errors.txt')
